@@ -1,11 +1,9 @@
 /obj/item/projectile/remotecontrolled
 	name = "remote controlled missile"
 	icon_state = "atrocket"
-	damage = 0
 	speed = 2
 	damage = 15
-	knockdown = 60
-	stamina = 50
+	knockdown = 10
 	var/mob/camera/aiEye/remote/controller/eyeobj
 
 /obj/item/projectile/remotecontrolled/Initialize()
@@ -64,3 +62,23 @@
 	if (istype(origin, /obj/item/projectile/remotecontrolled/))
 		var/obj/item/projectile/remotecontrolled/P = origin
 		P.setAngle(dir2angle(direct))
+
+/obj/item/projectile/remotecontrolled/fist
+	name = "remote controlled fist"
+	damage = 10
+	knockdown = 60
+	stamina = 50
+	var/obj/item/bodypart/r_arm/robot/rocket/rocket_arm
+
+/obj/item/projectile/remotecontrolled/fist/on_hit(atom/target, blocked = FALSE)
+	. = ..()
+	drop_arm()
+
+/obj/item/projectile/remotecontrolled/fist/on_range()
+	. = ..()
+	drop_arm()
+
+/obj/item/projectile/remotecontrolled/fist/proc/drop_arm()
+	rocket_arm.fired = FALSE
+	rocket_arm.forceMove(loc)
+	rocket_arm.icon_state = "borg_r_arm"
