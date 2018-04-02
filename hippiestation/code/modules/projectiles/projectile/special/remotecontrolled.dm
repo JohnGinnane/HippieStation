@@ -8,12 +8,12 @@
 
 /obj/item/projectile/remotecontrolled/Initialize()
 	create_eye()
+	. = ..()
 
 /obj/item/projectile/remotecontrolled/Destroy()
-	if (eyeobj)
-		remove_eye_control()
-		qdel(eyeobj)
-	..()
+	addtimer(CALLBACK(firer, /mob/living/.proc/remove_remote_control), 5)
+	remove_eye_control()
+	. = ..()
 
 /obj/item/projectile/remotecontrolled/fire(angle, atom/direct_target)
 	. = ..()
@@ -44,16 +44,18 @@
 /obj/item/projectile/remotecontrolled/proc/remove_eye_control()
 	if (!eyeobj)
 		return
-
 	if (!eyeobj.eye_user)
 		return
 
-	if (eyeobj.eye_user.client)
-		eyeobj.eye_user.reset_perspective(null)
-		eyeobj.RemoveImages()
-
+	eyeobj.RemoveImages()
+	eyeobj.eye_user.reset_perspective(null)
 	eyeobj.eye_user.remote_control = null
 	eyeobj.eye_user = null
+	qdel(eyeobj)
+
+/mob/living/proc/remove_remote_control()
+	reset_perspective(null)
+	remote_control = null
 
 /mob/camera/aiEye/remote/controller
 	name = "Inactive Controller Camera Eye"
@@ -68,7 +70,7 @@
 */
 /obj/item/projectile/remotecontrolled/fist
 	name = "remote controlled fist"
-	damage = 10
+	damage = 5
 	knockdown = 60
 	stamina = 50
 	var/obj/item/weldingtool/rocket_fist/fist
@@ -78,10 +80,10 @@
 	. = ..()
 
 /obj/item/projectile/remotecontrolled/fist/on_range()
+	to_chat(firer, "just ran outta fuel at [loc] ([x], [y])")
 	drop_arm()
 	. = ..()
 
 /obj/item/projectile/remotecontrolled/fist/proc/drop_arm()
 	fist.reagents.remove_reagent("welding_fuel", fist.max_fuel - range)
-	fist.attached = null
 	fist.forceMove(get_turf(src))
