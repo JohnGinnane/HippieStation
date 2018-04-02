@@ -63,22 +63,25 @@
 		var/obj/item/projectile/remotecontrolled/P = origin
 		P.setAngle(dir2angle(direct))
 
+/*
+	Rocket-Powered Remote-Controlled Fist
+*/
 /obj/item/projectile/remotecontrolled/fist
 	name = "remote controlled fist"
 	damage = 10
 	knockdown = 60
 	stamina = 50
-	var/obj/item/bodypart/r_arm/robot/rocket/rocket_arm
+	var/obj/item/weldingtool/rocket_fist/fist
 
 /obj/item/projectile/remotecontrolled/fist/on_hit(atom/target, blocked = FALSE)
-	. = ..()
 	drop_arm()
+	. = ..()
 
 /obj/item/projectile/remotecontrolled/fist/on_range()
-	. = ..()
 	drop_arm()
+	. = ..()
 
 /obj/item/projectile/remotecontrolled/fist/proc/drop_arm()
-	rocket_arm.fired = FALSE
-	rocket_arm.forceMove(loc)
-	rocket_arm.icon_state = "borg_r_arm"
+	fist.reagents.remove_reagent("welding_fuel", fist.max_fuel - range)
+	fist.attached = null
+	fist.forceMove(get_turf(src))
