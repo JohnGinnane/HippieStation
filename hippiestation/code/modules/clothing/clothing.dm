@@ -47,6 +47,7 @@
 
 /obj/item
 	var/list/alternate_screams = list()
+	var/list/alternate_screams_worn_required = TRUE // Set to FALSE if you want the screams to be used even if the item is not worn
 
 /obj/item/clothing/equipped(mob/user, slot)
 	..()

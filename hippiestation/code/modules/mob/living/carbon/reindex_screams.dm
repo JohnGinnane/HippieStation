@@ -31,6 +31,12 @@
 		add_screams(s_store.alternate_screams)
 	if(wear_id)
 		add_screams(wear_id.alternate_screams)
+	var/obj/item/l_hand = get_item_for_held_index(1)
+	if(l_hand && !l_hand.alternate_screams_worn_required)
+		add_screams(l_hand.alternate_screams)
+	var/obj/item/r_hand = get_item_for_held_index(2)
+	if(r_hand && !r_hand.alternate_screams_worn_required)
+		add_screams(r_hand.alternate_screams)
 
 //Note that the following two are for /mob/living, while the above two are for /carbon and /human
 /mob/living/proc/add_screams(var/list/screams)
